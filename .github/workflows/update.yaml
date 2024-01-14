@@ -22,7 +22,7 @@ jobs:
 
       - name: Update yara-forge data
         id: update-yara-forge
-        run: echo result=$(python update.py) >> $GITHUB_OUTPUT
+        run: echo "result=$(python update.py)" >> $GITHUB_OUTPUT
 
       - name: Release changes
         if: ! contains(steps.update-yara-forge.outputs.result, "No new file found")
