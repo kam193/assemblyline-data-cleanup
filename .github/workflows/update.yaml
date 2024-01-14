@@ -24,6 +24,13 @@ jobs:
         id: update-yara-forge
         run: echo "result=$(python process.py)" >> $GITHUB_OUTPUT
 
+      - name: Check done
+        run: |
+          if [[ -z "tmp/cleaned-rules.yar" ]]; then
+            echo "File not found"
+            exit 1
+          fi
+
       - name: Release changes
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
         uses: softprops/action-gh-release@v0.1.9
