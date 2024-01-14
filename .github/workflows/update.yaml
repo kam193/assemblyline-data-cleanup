@@ -36,7 +36,8 @@ jobs:
         uses: softprops/action-gh-release@v0.1.9
         with:
           files: |
-            last_file_id
-            tmp/cleaned-rules.yar
+            yara-forge/last_file_id
+            yara-forge/tmp/cleaned-rules.yar
           name: Release with file ${{ steps.update-yara-forge.outputs.result }}
           tag_name: file2-${{ steps.update-yara-forge.outputs.result }}
+          fail_on_unmatched_files: true
