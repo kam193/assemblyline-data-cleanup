@@ -33,7 +33,7 @@ jobs:
 
       - name: Release changes
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
-        uses: softprops/action-gh-release@v0.1.9
+        uses: softprops/action-gh-release@v0.1.15
         with:
           files: |
             yara-forge/last_file_id
