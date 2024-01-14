@@ -41,11 +41,10 @@ jobs:
 
       - name: Release changes
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
-        uses: softprops/action-gh-release@v0.1.15
+        uses: ncipollo/release-action@v1.13.0
         with:
-          files: |
-            yara-forge/last_file_id
-            yara-forge/tmp/cleaned-rules.yar
+          artifacts: yara-forge/last_file_id,yara-forge/tmp/cleaned-rules.yar
           name: Release with file ${{ steps.update-yara-forge.outputs.result }}
-          tag_name: file-${{ steps.update-yara-forge.outputs.result }}
-          fail_on_unmatched_files: true
+          tag: yara-release-${{ steps.update-yara-forge.outputs.result }}
+          makeLatest: true
+
