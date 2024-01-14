@@ -2,7 +2,8 @@ name: update-data
 run-name: Update source data
 on:
   schedule:
-    - "11 11 * * *"
+    - cron: "11 11 * * *"
+  workflow_dispatch:
 
 jobs:
   update-yara-forge:
