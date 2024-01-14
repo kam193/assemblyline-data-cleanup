@@ -25,7 +25,7 @@ jobs:
         run: echo "result=$(python update.py)" >> $GITHUB_OUTPUT
 
       - name: Release changes
-        if: ! contains(steps.update-yara-forge.outputs.result, "No new file found")
+        if: ${{ ! contains(steps.update-yara-forge.outputs.result, "No new file found") }}
         uses: softprops/action-gh-release@v0.1.9
         with:
           files: |
