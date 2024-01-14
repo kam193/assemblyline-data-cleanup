@@ -22,7 +22,7 @@ jobs:
 
       - name: Update yara-forge data
         id: update-yara-forge
-        run: echo "result=$(python update.py)" >> $GITHUB_OUTPUT
+        run: echo "result=$(python process.py)" >> $GITHUB_OUTPUT
 
       - name: Release changes
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
@@ -32,3 +32,4 @@ jobs:
             yara-forge/last_file_id
             yara-forge/tmp/cleaned-rules.yar
           name: Release with file ${{ steps.update-yara-forge.outputs.result }}
+          tag_name: file-${{ steps.update-yara-forge.outputs.result }}
