@@ -1,0 +1,7 @@
+upstream: YARAHQ/yara-forge
+set: core
+sanitize_lines:
+  - "^include.*$"
+remove_rules:
+  - TRELLIX_ARC_Ransom_Egregor
+output_dir: tmp

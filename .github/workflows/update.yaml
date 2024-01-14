@@ -1,0 +1,33 @@
+name: update-data
+run-name: Update source data
+on:
+  schedule:
+    - "11 11 * * *"
+
+jobs:
+  update-yara-forge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: yara-forge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -r requirements.txt
+
+      - name: Update yara-forge data
+        id: update-yara-forge
+        run: echo result=$(python update.py) >> $GITHUB_OUTPUT
+
+      - name: Release changes
+        if: ! contains(steps.update-yara-forge.outputs.result, "No new file found")
+        uses: softprops/action-gh-release@v0.1.9
+        with:
+          files: |
+            yara-forge/last_file_id
+            yara-forge/tmp/cleaned-rules.yar
+          name: Release with file ${{ steps.update-yara-forge.outputs.result }}
