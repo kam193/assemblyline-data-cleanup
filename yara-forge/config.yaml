@@ -2,6 +2,7 @@ upstream: YARAHQ/yara-forge
 set: extended
 sanitize_lines:
   - "^include.*$"
+remove_lines:
   - ^(\s)*quality = -.*
 remove_rules:
   - TRELLIX_ARC_Ransom_Egregor

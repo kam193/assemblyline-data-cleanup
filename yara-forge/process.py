@@ -41,9 +41,9 @@ def download_file(url, output_file):
     output_file.write(r.content)
 
 
-def prepare_regexps(config):
+def prepare_regexps(config, input_rxp:list[str]):
     regexps = []
-    for regex in config["sanitize_lines"]:
+    for regex in input_rxp:
         regexps.append(re.compile(regex))
     return regexps
 
@@ -56,12 +56,14 @@ def prepare_rules_to_remove(config):
 
 
 def clean_up_file(in_stream, out_path, config):
-    regexps = prepare_regexps(config)
+    regexps_sanitize = prepare_regexps(config, config["sanitize_lines"])
+    regexps_remove = prepare_regexps(config, config["remove_lines"])
     rules_to_remove = prepare_rules_to_remove(config)
 
     with open(out_path, "w+") as out_stream:
         loop_until_rule_end = False
         for line in in_stream:
+            save_line = True
             line = line.decode("utf-8")
             if loop_until_rule_end:
                 if line.startswith("}"):
@@ -71,14 +73,21 @@ def clean_up_file(in_stream, out_path, config):
             for rule in rules_to_remove:
                 if line.startswith(rule):
                     loop_until_rule_end = True
+                    save_line = False
                     break
 
             if not loop_until_rule_end:
-                for regex in regexps:
+                for regex in regexps_sanitize:
                     if regex.match(line):
                         out_stream.write("#")
                         break
+                else:
+                    for regex in regexps_remove:
+                        if regex.match(line):
+                            save_line = False
+                            break
 
+            if save_line:
                 out_stream.write(line)
 
 
