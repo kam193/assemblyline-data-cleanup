@@ -237,7 +237,7 @@ def process():
 
     rules_enrichment(
         f"{config['output_dir']}/cleaned-rules.yar",
-        f"{config['output_dir']}/yara-forge-{config['upstream']}-enriched.yar",
+        f"{config['output_dir']}/yara-forge-{config['set']}-enriched.yar",
     )
 
     with open("last_file_id", "w+") as f:
