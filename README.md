@@ -23,3 +23,9 @@ Cleaned and enriched data are automatically put in the releases:
 
 Note that first two are lacking comments (e.g. full license text) from the original dataset. Thus they
 are shipped together with unenriched form where you can find all additional details.
+
+## Adding to AssemblyLine
+
+To keep up to date, add the URL linking to the latest release file as your YARA update source:
+`https://github.com/kam193/assemblyline-data-cleanup/releases/latest/download/<filename>`, e.g.:
+`https://github.com/kam193/assemblyline-data-cleanup/releases/latest/download/yara-forge-extended-enriched.yar`
