@@ -231,14 +231,19 @@ def process():
                     with z.open(file) as in_stream:
                         clean_up_file(
                             in_stream,
-                            f"{config['output_dir']}/cleaned-rules.yar",
+                            f"{config['output_dir']}/yara-forge-{config['set']}-unenriched.yar",
                             config,
                         )
 
     rules_enrichment(
-        f"{config['output_dir']}/cleaned-rules.yar",
+        f"{config['output_dir']}/yara-forge-{config['set']}-unenriched.yar",
         f"{config['output_dir']}/yara-forge-{config['set']}-enriched.yar",
     )
+    shutil.copy(
+        f"{config['output_dir']}/yara-forge-{config['set']}-enriched.yar",
+        f"{config['output_dir']}/cleaned-rules.yar",
+    )
+
 
     with open("last_file_id", "w+") as f:
         f.write(str(remote_file_id))
