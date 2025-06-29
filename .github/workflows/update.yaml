@@ -27,7 +27,7 @@ jobs:
       - name: Check done
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
         run: |
-          if [[ -z "tmp/cleaned-rules.yar" ]]; then
+          if [[ -z "tmp/*.yar" ]]; then
             echo "File not found"
             exit 1
           fi
@@ -43,7 +43,7 @@ jobs:
         if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: yara-forge/last_file_id,yara-forge/tmp/cleaned-rules.yar
+          artifacts: yara-forge/last_file_id,yara-forge/tmp/*.yar
           name: Release with file ${{ steps.update-yara-forge.outputs.result }}
           tag: yara-release-${{ steps.update-yara-forge.outputs.result }}
           makeLatest: true
