@@ -9,7 +9,6 @@ CATEGORY_TO_KEYWORDS = {
         "backdoor",
         "banker",
         "bootkit",
-        "bot",
         "browser-hijacker",
         "brootforcer",
         "clickfraud",
@@ -32,8 +31,12 @@ CATEGORY_TO_KEYWORDS = {
         "spamer",
         "wiper",
         "webshell",
-        "worm",
+        " bot ",
+        "_bot_",
+        "_worm",
+        " worm",  # lower FP
         # generic names at the end
+        "trojan",
         "apt",
         "malware",
         "malpedia",  # All there is malware
@@ -98,7 +101,7 @@ def enrich_ruleset(rules):
                 if keyword in rule_name or keyword in description:
                     rule_category = category
                     if category == "malware" and not malware_type:
-                        malware_type = keyword.replace("_", "")
+                        malware_type = keyword.replace("_", "").replace(" ", "")
                     break
 
             if not rule_category and malware_family:
