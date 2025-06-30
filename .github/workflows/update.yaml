@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-yara-forge:
+  update-yara-rules:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     defaults:
       run:
-        working-directory: yara-forge
+        working-directory: yara-rules
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,12 +20,12 @@ jobs:
           python-version: '3.10'
       - run: pip install -r requirements.txt
 
-      - name: Update yara-forge data
-        id: update-yara-forge
+      - name: Update yara-rules data
+        id: update-yara-rules
         run: echo "result=$(python process.py)" >> $GITHUB_OUTPUT
 
       - name: Check done
-        if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
+        if: ${{ ! contains(steps.update-yara-rules.outputs.result, 'No new file found') }}
         run: |
           if [[ -z "tmp/*.yar" ]]; then
             echo "File not found"
@@ -33,18 +33,18 @@ jobs:
           fi
 
       - name: Commit changes
-        if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
+        if: ${{ ! contains(steps.update-yara-rules.outputs.result, 'No new file found') }}
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
-          commit_message: "Update yara-forge data"
-          files: yara-forge/last_file_id
+          commit_message: "Update yara-rules data"
+          files: yara-rules/last_file_id yara-rules/elastic_commit_id.txt
 
       - name: Release changes
-        if: ${{ ! contains(steps.update-yara-forge.outputs.result, 'No new file found') }}
+        if: ${{ ! contains(steps.update-yara-rules.outputs.result, 'No new file found') }}
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: yara-forge/last_file_id,yara-forge/tmp/*.yar
-          name: Release with file ${{ steps.update-yara-forge.outputs.result }}
-          tag: yara-release-${{ steps.update-yara-forge.outputs.result }}
+          artifacts: yara-rules/last_file_id,yara-rules/tmp/*.yar
+          name: Release ${{ steps.update-yara-rules.outputs.result }}
+          tag: yara-release-${{ steps.update-yara-rules.outputs.result }}
           makeLatest: true
 

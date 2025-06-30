@@ -13,6 +13,7 @@ format and integrates the best with metadata prepared in that way.
 This repository attempts automatically fill key missing data (categories, malware names) in the following Yara rulesets:
 
   * https://github.com/YARAHQ/yara-forge/
+  * https://github.com/elastic/protections-artifacts/
 
 Cleaned and enriched data are automatically put in the releases:
 
@@ -23,6 +24,10 @@ Cleaned and enriched data are automatically put in the releases:
 
 Note that first two are lacking comments (e.g. full license text) from the original dataset. Thus they
 are shipped together with unenriched form where you can find all additional details.
+
+  * `elastic-protections-artifacts-enriched.yar` - enriched Yara rules from the Elastic
+    [protection-artifacts](https://github.com/elastic/protections-artifacts/)
+    repository. Note that they are licensed under Elastic's own [license](https://github.com/elastic/protections-artifacts/blob/main/LICENSE.txt)
 
 ## Adding to AssemblyLine
 
