@@ -165,6 +165,11 @@ def rules_enrichment(input_file, output_file):
         malware_family = None
 
         rule_name = rule.get("rule_name", "").lower()
+
+        if "_susp_" in rule_name:
+            # Skip suspicious rules, they are handled well by AL
+            continue
+
         description = ""
         for meta in rule.get("metadata", []):
             description = meta.get("description", "").lower() or description
