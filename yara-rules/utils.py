@@ -104,29 +104,28 @@ def enrich_ruleset(rules):
                         malware_type = keyword.replace("_", "").replace(" ", "")
                     break
 
-            if not rule_category and malware_family:
-                rule_category = "malware"
+        if not rule_category and malware_family:
+            rule_category = "malware"
 
-            # Hacking tool names can be easily confused with malware
-            if rule_category and "hktl" in rule_name:
-                rule_category = "tool"
+        # Hacking tool names can be easily confused with malware
+        if rule_category and "hktl" in rule_name:
+            rule_category = "tool"
 
-            # TODO: suspicious rule names
-            if rule_category:
-                # in yara-forge, the first part of the rule name is the name of the ruleset
-                detail = malware_family or "_".join(
-                    p
-                    for p in rule.get("rule_name", "").split("_")[1:]
-                    if p.lower() not in CATEGORY_TO_KEYWORDS[category]
-                    and p.lower() not in WORDS_TO_SKIP
-                )
-                rule["metadata"].append({"category": rule_category})
-                if detail:
-                    rule["metadata"].append({rule_category: detail})
-                if malware_type:
-                    if malware_type in ["malpedia", "malw", "mal"]:
-                        malware_type = "trojan"  # generic type if nothing more found
-                    if malware_type in ["ran"]:
-                        malware_type = "ransomware"
-                    rule["metadata"].append({"malware_type": malware_type})
-                break
+        # TODO: suspicious rule names
+        if rule_category:
+            # in yara-forge, the first part of the rule name is the name of the ruleset
+            detail = malware_family or "_".join(
+                p
+                for p in rule.get("rule_name", "").split("_")[1:]
+                if p.lower() not in CATEGORY_TO_KEYWORDS[rule_category]
+                and p.lower() not in WORDS_TO_SKIP
+            )
+            rule["metadata"].append({"category": rule_category})
+            if detail:
+                rule["metadata"].append({rule_category: detail})
+            if malware_type:
+                if malware_type in ["malpedia", "malw", "mal", "malware"]:
+                    malware_type = "trojan"  # generic type if nothing more found
+                if malware_type in ["ran"]:
+                    malware_type = "ransomware"
+                rule["metadata"].append({"malware_type": malware_type})
