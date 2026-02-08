@@ -86,7 +86,9 @@ def enrich_ruleset(rules):
         rule_name = rule.get("rule_name", "").lower()
 
         if "_susp_" in rule_name:
-            # Skip suspicious rules, they are handled well by AL
+            # Looks like something changed and the suspicious rules are no longer
+            # handled well by AL, so enforcing al_score to 300 for them
+            rule["metadata"].append({"al_score": 300})
             continue
 
         description = ""
