@@ -34,3 +34,10 @@ are shipped together with unenriched form where you can find all additional deta
 To keep up to date, add the URL linking to the latest release file as your YARA update source:
 `https://github.com/kam193/assemblyline-data-cleanup/releases/latest/download/<filename>`, e.g.:
 `https://github.com/kam193/assemblyline-data-cleanup/releases/latest/download/yara-forge-extended-enriched.yar`
+
+## IP intel
+
+`ip_intel/combine.py` builds an OpenSearch ip2geo datasource tagging Tor, VPN, relay, proxy, cloud, bot
+and datacenter networks. It is refreshed daily and published at https://sourced-data.kam193.eu/ip_intel/.
+
+Use `https://sourced-data.kam193.eu/ip_intel/manifest.json` as the ip2geo datasource endpoint.

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IP intel</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+code { background: #f2f2f2; padding: 0 .25rem; }
+</style>
+</head>
+<body>
+<h1>IP intel</h1>
+<p>Daily-refreshed ip2geo datasource for OpenSearch, tagging Tor, VPN, relay, proxy, cloud, bot and datacenter networks.</p>
+<ul>
+<li><a href="manifest.json">manifest.json</a> - ip2geo datasource endpoint</li>
+<li><a href="ip-intel.zip">ip-intel.zip</a> - CSV with <code>network,category,provider</code></li>
+</ul>
+<p>Last update: <span id="updated">unknown</span></p>
+<p>Use in OpenSearch:</p>
+<pre><code>PUT /_plugins/geospatial/ip2geo/datasource/ip-intel
+{
+  "endpoint": "https://sourced-data.kam193.eu/ip_intel/manifest.json",
+  "update_interval_in_days": 1
+}</code></pre>
+<p>Source: multiple data sources combined in <a href="https://github.com/kam193/assemblyline-data-cleanup/tree/main/ip_intel">kam193/assemblyline-data-cleanup</a></p>
+<script>
+fetch("manifest.json").then(r => r.json()).then(m => {
+  document.getElementById("updated").textContent = new Date(m.updated_at_in_epoch_milli).toISOString();
+});
+</script>
+</body>
+</html>
