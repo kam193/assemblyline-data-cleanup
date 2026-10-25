@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build datasource
+        env:
+          IP2LOCATIONTOKEN: ${{ secrets.IP2LOCATIONTOKEN }}
         run: |
           mkdir -p _site/ip_intel
           cp pages/index.html _site/

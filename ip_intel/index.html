@@ -11,7 +11,7 @@ code { background: #f2f2f2; padding: 0 .25rem; }
 </head>
 <body>
 <h1>IP intel</h1>
-<p>Daily-refreshed ip2geo datasource for OpenSearch, tagging Tor, VPN, relay, proxy, cloud, bot and datacenter networks.</p>
+<p>Daily-refreshed ip2geo datasource for OpenSearch, tagging Tor, VPN, relay, proxy, cloud, bot, datacenter, scanner, botnet and spam networks.</p>
 <ul>
 <li><a href="manifest.json">manifest.json</a> - ip2geo datasource endpoint</li>
 <li><a href="ip-intel.zip">ip-intel.zip</a> - CSV with <code>network,category,provider</code></li>
@@ -23,7 +23,27 @@ code { background: #f2f2f2; padding: 0 .25rem; }
   "endpoint": "https://sourced-data.kam193.eu/ip_intel/manifest.json",
   "update_interval_in_days": 1
 }</code></pre>
-<p>Source: multiple data sources combined in <a href="https://github.com/kam193/assemblyline-data-cleanup/tree/main/ip_intel">kam193/assemblyline-data-cleanup</a></p>
+<p>IP intel uses the IP2Location LITE database for some of <a href="https://lite.ip2location.com">IP intelligence information</a>.</p>
+<p>Source: multiple data sources combined in <a href="https://github.com/kam193/assemblyline-data-cleanup/tree/main/ip_intel">kam193/assemblyline-data-cleanup</a>. Data is refreshed once a day.</p>
+<h2>Data sources</h2>
+<ul>
+<li><a href="https://check.torproject.org/torbulkexitlist">Tor Project bulk exit list</a></li>
+<li><a href="https://github.com/X4BNet/lists_vpn">X4BNet/lists_vpn</a></li>
+<li><a href="https://github.com/tn3w/ProtonVPN-IPs">tn3w/ProtonVPN-IPs</a></li>
+<li><a href="https://www.vpngate.net/">VPN Gate</a></li>
+<li><a href="https://api.cloudflare.com/warp-egress-ip-ranges.csv">Cloudflare WARP egress IP ranges</a></li>
+<li><a href="https://www.gstatic.com/vpn/geofeed">Google VPN geofeed</a></li>
+<li><a href="https://github.com/proxifly/free-proxy-list">proxifly/free-proxy-list</a></li>
+<li><a href="https://github.com/monosans/proxy-list">monosans/proxy-list</a></li>
+<li><a href="https://github.com/rezmoss/cloud-provider-ip-addresses">rezmoss/cloud-provider-ip-addresses</a></li>
+<li><a href="https://developers.google.com/search/docs/crawling-indexing/verifying-googlebot">Google crawler and fetcher IP ranges</a></li>
+<li><a href="https://platform.openai.com/docs/bots">OpenAI crawler IP ranges</a></li>
+<li><a href="https://docs.perplexity.ai/guides/bots">Perplexity IP ranges</a></li>
+<li><a href="https://platform.claude.com/docs/en/api/ip-addresses">Anthropic IP addresses</a></li>
+<li><a href="https://isc.sans.edu/api/">SANS Internet Storm Center</a> (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>)</li>
+<li><a href="https://github.com/OpenFilters/internet-scanners">OpenFilters/internet-scanners</a></li>
+<li><a href="https://lite.ip2location.com">IP2Proxy LITE</a></li>
+</ul>
 <script>
 fetch("manifest.json").then(r => r.json()).then(m => {
   document.getElementById("updated").textContent = new Date(m.updated_at_in_epoch_milli).toISOString();

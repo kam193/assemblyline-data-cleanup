@@ -37,7 +37,10 @@ To keep up to date, add the URL linking to the latest release file as your YARA 
 
 ## IP intel
 
-`ip_intel/combine.py` builds an OpenSearch ip2geo datasource tagging Tor, VPN, relay, proxy, cloud, bot
-and datacenter networks. It is refreshed daily and published at https://sourced-data.kam193.eu/ip_intel/.
+`ip_intel/combine.py` builds an OpenSearch ip2geo datasource tagging Tor, VPN, relay, proxy, cloud, bot,
+datacenter, scanner, botnet and spam networks. It is refreshed daily and published at https://sourced-data.kam193.eu/ip_intel/.
 
 Use `https://sourced-data.kam193.eu/ip_intel/manifest.json` as the ip2geo datasource endpoint.
+
+IP intel uses the IP2Location LITE database for some of [IP intelligence](https://lite.ip2location.com).
+Building it requires an IP2Location LITE download token in the `IP2LOCATIONTOKEN` environment variable.
