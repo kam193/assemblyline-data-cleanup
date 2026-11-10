@@ -37,8 +37,20 @@ To keep up to date, add the URL linking to the latest release file as your YARA 
 
 ## IP intel
 
-`ip_intel/combine.py` builds an OpenSearch ip2geo datasource tagging Tor, VPN, relay, proxy, cloud, bot,
-datacenter, scanner, botnet and spam networks. It is refreshed daily and published at https://sourced-data.kam193.eu/ip_intel/.
+`ip_intel/combine.py` builds an OpenSearch ip2geo datasource tagging Tor, VPN, relay, proxy, cloud,
+Microsoft 365, bot, datacenter, scanner, botnet and spam networks. The data
+is refreshed daily and published at https://sourced-data.kam193.eu/ip_intel/.
+
+Microsoft 365 endpoint data is documented at
+https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service.
+
+Cloud ownership ranges are supplemented with official feeds from
+[AWS](https://ip-ranges.amazonaws.com/ip-ranges.json),
+[Google Cloud](https://www.gstatic.com/ipranges/cloud.json),
+[Oracle Cloud](https://docs.oracle.com/en-us/iaas/tools/public_ip_ranges.json),
+[Azure Service Tags](https://www.microsoft.com/en-us/download/details.aspx?id=56519),
+[GitHub](https://api.github.com/meta), and
+[Cloudflare](https://www.cloudflare.com/ips-v4/).
 
 Use `https://sourced-data.kam193.eu/ip_intel/manifest.json` as the ip2geo datasource endpoint.
 
