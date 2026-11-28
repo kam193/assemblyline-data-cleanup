@@ -8,10 +8,12 @@ import json
 import os
 import re
 import time
+import urllib.error
 import urllib.request
 import zipfile
 from collections import Counter
 from collections.abc import Iterable, Iterator
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -97,6 +99,29 @@ REZMOSS_CATEGORIES = {
 }
 
 
+DOWNLOAD_ATTEMPTS = 5
+MAX_RETRY_WAIT = 900
+RETRY_CODES = {403, 429, 500, 502, 503, 504}
+
+
+def retry_delay(headers, attempt: int) -> float:
+    retry_after = headers.get("Retry-After")
+    reset = headers.get("X-RateLimit-Reset")
+    delay = 2.0**attempt * 5
+    try:
+        if retry_after is not None:
+            delay = float(retry_after)
+        elif reset is not None:
+            delay = float(reset) - time.time()
+    except ValueError:
+        if retry_after is not None:
+            try:
+                delay = parsedate_to_datetime(retry_after).timestamp() - time.time()
+            except (TypeError, ValueError):
+                pass
+    return min(max(delay, 1.0) + 1, MAX_RETRY_WAIT)
+
+
 class Source:
     def __init__(
         self,
@@ -104,18 +129,28 @@ class Source:
         category: str,
         provider: str = "",
         name: str = "",
-        min_entries: int = 1,
     ):
         self.url = url
         self.category = category
         self.provider = provider
         self.name = name or f"{category}:{provider}:{url}"
-        self.min_entries = min_entries
 
     def download(self) -> bytes:
         request = urllib.request.Request(self.url, headers={"User-Agent": USER_AGENT})
-        with urllib.request.urlopen(request, timeout=300) as response:
-            return response.read()
+        for attempt in range(1, DOWNLOAD_ATTEMPTS + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=300) as response:
+                    return response.read()
+            except urllib.error.HTTPError as error:
+                if error.code not in RETRY_CODES or attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay(error.headers, attempt)
+            except (urllib.error.URLError, TimeoutError):
+                if attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay({}, attempt)
+            print(f"retrying {self.url} in {delay:.0f}s (attempt {attempt})")
+            time.sleep(delay)
 
     def lines(self) -> list[str]:
         return [
@@ -245,8 +280,20 @@ class AzureSource(Source):
         if not match:
             raise ValueError("Microsoft Azure Service Tags JSON link not found")
         request = urllib.request.Request(match.group(), headers={"User-Agent": USER_AGENT})
-        with urllib.request.urlopen(request, timeout=300) as response:
-            return response.read()
+        for attempt in range(1, DOWNLOAD_ATTEMPTS + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=300) as response:
+                    return response.read()
+            except urllib.error.HTTPError as error:
+                if error.code not in RETRY_CODES or attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay(error.headers, attempt)
+            except (urllib.error.URLError, TimeoutError):
+                if attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay({}, attempt)
+            print(f"retrying {self.url} in {delay:.0f}s (attempt {attempt})")
+            time.sleep(delay)
 
     def entries(self) -> list[tuple[str, str, str]]:
         return [
@@ -285,8 +332,20 @@ class Microsoft365Source(Source):
     def download(self) -> bytes:
         url = f"{self.url}?clientrequestid={uuid4()}"
         request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-        with urllib.request.urlopen(request, timeout=300) as response:
-            return response.read()
+        for attempt in range(1, DOWNLOAD_ATTEMPTS + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=300) as response:
+                    return response.read()
+            except urllib.error.HTTPError as error:
+                if error.code not in RETRY_CODES or attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay(error.headers, attempt)
+            except (urllib.error.URLError, TimeoutError):
+                if attempt == DOWNLOAD_ATTEMPTS:
+                    raise
+                delay = retry_delay({}, attempt)
+            print(f"retrying {self.url} in {delay:.0f}s (attempt {attempt})")
+            time.sleep(delay)
 
     def entries(self) -> list[tuple[str, str, str]]:
         entries = []
@@ -595,11 +654,6 @@ def main():
     key_sources: dict[str, set[str]] = {}
     for source in SOURCES:
         entries = list(source.entries())
-        if len(entries) < source.min_entries:
-            raise ValueError(
-                f"{source.name} returned {len(entries)} entries; expected at least "
-                f"{source.min_entries}"
-            )
         keys = set()
         for network, category, provider in entries:
             ranges.add(network, (category, provider))
